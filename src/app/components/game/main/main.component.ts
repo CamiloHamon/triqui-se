@@ -20,12 +20,10 @@ export class MainComponent implements OnInit {
     {
       name: 'Jugador',
       selected: true,
-      currentTurn: true,
     },
     {
       name: 'IA',
       selected: false,
-      currentTurn: false,
     },
   ];
   private playersAux = this.players.slice(0, this.players.length);
@@ -43,6 +41,7 @@ export class MainComponent implements OnInit {
   ];
 
   public playerWin: any;
+  public emplate: boolean = false;
   constructor(private _snackBar: MatSnackBar) {
     this.fillTablero();
   }
@@ -80,12 +79,10 @@ export class MainComponent implements OnInit {
         {
           name: 'Jugador 1',
           selected: true,
-          currentTurn: true,
         },
         {
           name: 'Jugador 2',
           selected: false,
-          currentTurn: false,
         },
       ];
     } else {
@@ -94,8 +91,10 @@ export class MainComponent implements OnInit {
   }
 
   emptyTable() {
-    this.players[0].currentTurn = !this.players[0].currentTurn;
-    this.players[1].currentTurn = !this.players[1].currentTurn;
+    this.playerWin = null;
+    this.emplate = false;
+    this.players[0].selected = true;
+    this.players[1].selected = false;
     this.tablero.campos.forEach((campo) => {
       campo.marcado = false;
       campo.valor = '';
@@ -104,13 +103,17 @@ export class MainComponent implements OnInit {
     });
   }
 
-  tresEnRaya(user: string) {
+  getArrayPositions() {
     const array = Array<any>(9);
     this.tablero.campos.forEach((c) => {
       const pos = c.pos ? c.pos : 0;
       array[pos] = c.valor;
     });
+    return array;
+  }
 
+  tresEnRaya(user: string) {
+    const array = this.getArrayPositions();
     let ganador = false;
     for (var i in this.combinacionesGanadoras) {
       for (var j in this.combinacionesGanadoras[i]) {
@@ -123,10 +126,13 @@ export class MainComponent implements OnInit {
         }
       }
       if (ganador) {
-        if (!this.players[0].currentTurn) {
-          this.playerWin = this.players[1];
-        } else {
+        console.log(this.players[0]);
+        console.log(this.players[1]);
+
+        if (this.players[0].selected) {
           this.playerWin = this.players[0];
+        } else {
+          this.playerWin = this.players[1];
         }
 
         let message = '';
@@ -137,10 +143,21 @@ export class MainComponent implements OnInit {
     }
   }
 
+  validMark() {
+    let contador = 0;
+    this.tablero.campos.forEach((c) => {
+      if (c.marcado) contador++;
+    });
+    if (contador == 9) {
+      this.emplate = true;
+      this.openSnackBar('¡Ha sido un empate!', '😢');
+    }
+  }
+
   sendPos(pos: number) {
     if (!this.tablero.campos[pos].marcado && !this.playerWin) {
       this.tablero.campos[pos].marcado = true;
-      if (this.players[0].currentTurn) {
+      if (this.players[0].selected) {
         this.tablero.campos[pos].styles += ' cross';
         this.tablero.campos[pos].valor = 'x';
         this.tresEnRaya('x');
@@ -149,13 +166,64 @@ export class MainComponent implements OnInit {
         this.tablero.campos[pos].valor = 'o';
         this.tresEnRaya('o');
       }
-      this.players[0].currentTurn = !this.players[0].currentTurn;
-      this.players[1].currentTurn = !this.players[1].currentTurn;
+      this.validMark();
       if (!this.playerWin) {
         this.players[0].selected = !this.players[0].selected;
         this.players[1].selected = !this.players[1].selected;
       }
+
+      if (this.players[1].name == 'IA' && this.players[1].selected) {
+        const pos = this.getPos();
+        this.sendPos(pos);
+      }
     }
+  }
+
+  tableroMarcable(posicion: number) {
+    const array = this.getArrayPositions();
+    if (array[posicion] == 0) return true;
+    else return false;
+  }
+
+  tableroCeldasVacias() {
+    var n = 9;
+    const array = this.getArrayPositions();
+    for (var i = 0; i < n; i++) {
+      if (array[i] == 0) return true;
+    }
+    return false;
+  }
+
+  min() {
+    this.tresEnRaya('o');
+    if (this.playerWin) return 1;
+    if (!this.tableroCeldasVacias()) return 0;
+    var n = 9;
+    var aux = 0,
+      mejor = 9999;
+    for (var i = 0; i < n; i++)
+      if (this.tableroMarcable(i)) {
+        if (aux < mejor) mejor = aux;
+      }
+    return mejor;
+  }
+
+  getPos(): number {
+    const ar_triqui = this.getArrayPositions();
+    var posicion = 0;
+    var n = 9;
+    var aux,
+      mejor = -9999;
+    for (var i = 0; i < n; i++) {
+      if (this.tableroMarcable(i)) {
+        aux = this.min();
+        if (aux > mejor) {
+          mejor = aux;
+          posicion = i;
+        }
+      }
+    }
+    return posicion;
   }
 
   openSnackBar(message: string, action: string) {
@@ -166,12 +234,7 @@ export class MainComponent implements OnInit {
       })
       .onAction()
       .subscribe((a) => {
-        this.playerWin = null;
         this.emptyTable();
-        if (this.players[1].selected) {
-          this.players[0].selected = !this.players[0].selected;
-          this.players[1].selected = !this.players[1].selected;
-        }
       });
   }
 }

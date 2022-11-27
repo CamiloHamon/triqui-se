@@ -18,11 +18,11 @@ export class MainComponent implements OnInit {
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
   public players = [
     {
-      name: 'Jugador',
+      name: 'Jugador 🎮',
       selected: true,
     },
     {
-      name: 'IA',
+      name: 'IA 🤖',
       selected: false,
     },
   ];
@@ -39,24 +39,27 @@ export class MainComponent implements OnInit {
     [1, 4, 7],
     [2, 5, 8],
   ];
-
+  private calculos: number = 0;
+  private cloneTablero: any = [];
   public playerWin: any;
   public emplate: boolean = false;
+  private difficulty: number = 0;
+
   constructor(private _snackBar: MatSnackBar) {
     this.fillTablero();
   }
 
   fillTablero() {
     const styles = [
+      'col-1 p-5',
+      'col-1 border-start border-end p-5',
+      'col-1 p-5',
+      'col-1 border-top p-5',
+      'col-1 border-top border-start boder-end p-5',
+      'col-1 border-start border-top p-5',
+      'col-1 border-top p-5',
       'col-1 border-top border-start p-5',
       'col-1 border-top border-start p-5',
-      'col-1 border-top border-start border-end p-5',
-      'col-1 border-top border-start p-5',
-      'col-1 border-top border-start p-5',
-      'col-1 border-top border-start border-end p-5',
-      'col-1 border-top border-start border-bottom p-5',
-      'col-1 border-top border-start border-bottom p-5',
-      'col-1 border-top border-start border-bottom border-end p-5',
     ];
 
     for (let i = 0; i < this.tablero.campos.length; i++) {
@@ -67,9 +70,17 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  refresh(action: any) {
+    this.emptyTable();
+  }
+
   getValueChecked(state: any) {
     this.isChecked = state;
     this.changePlayer();
+  }
+
+  getValueDifficulty(difficulty: any) {
+    this.difficulty = difficulty;
   }
 
   changePlayer() {
@@ -77,11 +88,11 @@ export class MainComponent implements OnInit {
     if (this.isChecked) {
       this.players = [
         {
-          name: 'Jugador 1',
+          name: 'Jugador 1 🎮',
           selected: true,
         },
         {
-          name: 'Jugador 2',
+          name: 'Jugador 2 🕹',
           selected: false,
         },
       ];
@@ -126,9 +137,6 @@ export class MainComponent implements OnInit {
         }
       }
       if (ganador) {
-        console.log(this.players[0]);
-        console.log(this.players[1]);
-
         if (this.players[0].selected) {
           this.playerWin = this.players[0];
         } else {
@@ -136,8 +144,9 @@ export class MainComponent implements OnInit {
         }
 
         let message = '';
-        if (this.playerWin.name == 'IA') message = '¡Haz perdido contra la IA!';
-        else message = `¡El ${this.playerWin.name} ha ganado!`;
+        if (this.playerWin.name == 'IA 🤖')
+          message = '¡Haz perdido contra la IA! 🤖';
+        else message = `¡El ${this.playerWin.name} ha ganado! 🥇`;
         this.openSnackBar(message, 'Ok');
       }
     }
@@ -148,9 +157,9 @@ export class MainComponent implements OnInit {
     this.tablero.campos.forEach((c) => {
       if (c.marcado) contador++;
     });
-    if (contador == 9) {
+    if (contador == 9 && !this.playerWin) {
       this.emplate = true;
-      this.openSnackBar('¡Ha sido un empate!', '😢');
+      this.openSnackBar('¡Ha sido un empate! 👏', 'Ok');
     }
   }
 
@@ -171,58 +180,146 @@ export class MainComponent implements OnInit {
         this.players[0].selected = !this.players[0].selected;
         this.players[1].selected = !this.players[1].selected;
       }
+    }
 
-      if (this.players[1].name == 'IA' && this.players[1].selected) {
-        const pos = this.getPos();
-        this.sendPos(pos);
-      }
+    if (
+      !this.playerWin &&
+      this.players[1].name == 'IA 🤖' &&
+      this.players[1].selected &&
+      !this.emplate
+    ) {
+      const pos =
+        this.difficulty == 0 ? Math.ceil(Math.random() * 8) : this.getPos();
+      this.sendPos(pos);
     }
   }
 
   tableroMarcable(posicion: number) {
-    const array = this.getArrayPositions();
-    if (array[posicion] == 0) return true;
+    if (this.cloneTablero[posicion] == '') return true;
     else return false;
   }
 
+  tableroMarcar(turno: string, posicion: number) {
+    this.cloneTablero[posicion] = turno;
+    this.calculos++;
+  }
+
   tableroCeldasVacias() {
-    var n = 9;
-    const array = this.getArrayPositions();
-    for (var i = 0; i < n; i++) {
-      if (array[i] == 0) return true;
+    for (var i = 0; i < 9; i++) {
+      if (this.cloneTablero[i] == 0) return true;
     }
     return false;
   }
 
-  min() {
-    this.tresEnRaya('o');
-    if (this.playerWin) return 1;
+  validarGanador(jugador: string) {
+    if (
+      this.cloneTablero[0] == jugador &&
+      this.cloneTablero[4] == jugador &&
+      this.cloneTablero[8] == jugador
+    )
+      return true;
+    else if (
+      this.cloneTablero[2] == jugador &&
+      this.cloneTablero[4] == jugador &&
+      this.cloneTablero[6] == jugador
+    )
+      return true;
+    else if (
+      this.cloneTablero[0] == jugador &&
+      this.cloneTablero[1] == jugador &&
+      this.cloneTablero[2] == jugador
+    )
+      return true;
+    else if (
+      this.cloneTablero[3] == jugador &&
+      this.cloneTablero[4] == jugador &&
+      this.cloneTablero[5] == jugador
+    )
+      return true;
+    else if (
+      this.cloneTablero[6] == jugador &&
+      this.cloneTablero[7] == jugador &&
+      this.cloneTablero[8] == jugador
+    )
+      return true;
+    else if (
+      this.cloneTablero[0] == jugador &&
+      this.cloneTablero[3] == jugador &&
+      this.cloneTablero[6] == jugador
+    )
+      return true;
+    else if (
+      this.cloneTablero[1] == jugador &&
+      this.cloneTablero[4] == jugador &&
+      this.cloneTablero[7] == jugador
+    )
+      return true;
+    else if (
+      this.cloneTablero[2] == jugador &&
+      this.cloneTablero[5] == jugador &&
+      this.cloneTablero[8] == jugador
+    )
+      return true;
+    else return false;
+  }
+
+  max() {
+    if (this.validarGanador('x')) return -1;
     if (!this.tableroCeldasVacias()) return 0;
     var n = 9;
-    var aux = 0,
-      mejor = 9999;
+    var aux,
+      mejor = -9999;
     for (var i = 0; i < n; i++)
       if (this.tableroMarcable(i)) {
-        if (aux < mejor) mejor = aux;
+        this.tableroMarcar('o', i);
+        aux = this.min();
+        if (aux > mejor) mejor = aux;
+        this.tableroMarcar('', i);
       }
     return mejor;
   }
 
-  getPos(): number {
-    const ar_triqui = this.getArrayPositions();
-    var posicion = 0;
-    var n = 9;
-    var aux,
-      mejor = -9999;
-    for (var i = 0; i < n; i++) {
+  min() {
+    if (this.validarGanador('o')) return 1;
+    if (!this.tableroCeldasVacias()) return 0;
+    var aux = 0,
+      mejor = 9999;
+    for (var i = 0; i < 9; i++) {
       if (this.tableroMarcable(i)) {
+        this.tableroMarcar('x', i);
+        aux = this.max();
+        if (aux < mejor) mejor = aux;
+        this.tableroMarcar('', i);
+      }
+    }
+    return mejor;
+  }
+
+  clonar() {
+    const temp = Array<any>(9);
+    for (let i = 0; i < temp.length; i++)
+      temp[i] = this.tablero.campos[i].valor;
+    return temp;
+  }
+
+  getPos(): number {
+    this.calculos = 0;
+    this.cloneTablero = this.clonar();
+    let posicion = 0;
+    let aux = 0;
+    let mejor = -9999;
+    for (let i = 0; i < 9; i++) {
+      if (this.tableroMarcable(i)) {
+        this.tableroMarcar('o', i);
         aux = this.min();
         if (aux > mejor) {
           mejor = aux;
           posicion = i;
         }
+        this.tableroMarcar('', i);
       }
     }
+    this.tableroMarcar('o', posicion);
     return posicion;
   }
 

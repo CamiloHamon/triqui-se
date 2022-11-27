@@ -1,8 +1,14 @@
 <div class="row justify-content-center align-items-center mt-4 mx-0">
-  <div class="col-auto">
+  <div class="col-auto" style="font-size: 12px">
     <mat-form-field appearance="fill">
       <mat-label>Dificultad</mat-label>
-      <mat-select matNativeControl [(value)]="selectedDifficulty" [disabled]="isChecked">
+      <mat-select
+        matNativeControl
+        [(value)]="selectedDifficulty"
+        (valueChange)="change()"
+        [disabled]="isChecked"
+        matTooltip="Cambiar nivel de dificultad"
+      >
         <mat-option
           *ngFor="let difficulty of difficulties"
           [value]="difficulty"
@@ -13,10 +19,18 @@
     </mat-form-field>
   </div>
 
-  <div class="col-auto pb-3">
-    <mat-slide-toggle (click)="toggleCheked()">
+  <div class="col-auto pb-3" style="font-size: 12px">
+    <mat-slide-toggle (click)="toggleCheked()" matTooltip="Juego en modo multijugador">
       <span class="text-white">Multijugador</span>
     </mat-slide-toggle>
+  </div>
+
+  <div class="col-auto pb-3" style="font-size: 12px">
+    <button mat-icon-button (click)="refresh()">
+      <mat-icon class="mat-18 text-primary" matTooltip="Reiniciar juego"
+        >refresh</mat-icon
+      >
+    </button>
   </div>
 </div>
 
@@ -25,8 +39,6 @@
     <span *ngIf="!isChecked">
       Dificultad de juego: {{ selectedDifficulty.viewValue }}
     </span>
-    <span *ngIf="isChecked">
-      Modo multijugador
-    </span>
+    <span *ngIf="isChecked"> Modo multijugador </span>
   </div>
 </div>

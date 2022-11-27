@@ -1,7 +1,18 @@
-<app-menu (emitCheked)="getValueChecked($event)"></app-menu>
+<app-menu
+  (emitCheked)="getValueChecked($event)"
+  (emitDifficulty)="getValueDifficulty($event)"
+  (emitRefresh)="refresh($event)"
+></app-menu>
 <div class="container">
-  <div class="row justify-content-center mx-0 mt-5" style="gap: 1rem">
-    <div class="col-auto text-center" *ngFor="let player of players">
+  <div
+    class="row justify-content-center align-items-end mx-0 mt-3 mb-4"
+    style="gap: 1rem"
+  >
+    <div
+      class="col-auto text-center p-0"
+      [ngClass]="i == 1 ? 'order-3' : 'order-1'"
+      *ngFor="let player of players; let i = index"
+    >
       <p
         class="p-2 rounded"
         [ngClass]="player.selected ? 'bg-primary' : 'inactive'"
@@ -9,14 +20,16 @@
         {{ player.name }}
       </p>
     </div>
+    <div class="order-2 vs"></div>
   </div>
 
   <div class="d-flex justify-content-center">
-    <div class="row justify-content-center" style="width: 292px">
+    <div class="row justify-content-center" style="width: 300px">
       <div
         *ngFor="let celda of tablero.campos; let i = index"
         class="{{ celda.styles }}"
         (click)="sendPos(i)"
+        [matTooltip]="!celda.marcado ? 'Casilla ' + (i + 1) : ''"
       ></div>
     </div>
   </div>

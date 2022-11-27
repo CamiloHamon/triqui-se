@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
+    "bootstrap": "^5.2.3",
     "esbuild": "^0.15.15",
     "g": "^2.0.1",
     "rxjs": "~7.5.0",

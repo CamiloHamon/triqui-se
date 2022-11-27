@@ -1,8 +1,13 @@
 import { MatMenuModule } from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field'
+import {MatButtonToggleModule} from '@angular/material/button-toggle'
+import {MatSlideToggleModule} from '@angular/material/slide-toggle'
+import {MatChipsModule} from '@angular/material/chips'
+import {MatListModule} from '@angular/material/list'
+import {MatSelectModule} from '@angular/material/select'
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,7 +24,13 @@ import { MenuComponent } from './components/game/menu/menu.component';
     AppRoutingModule,
     NoopAnimationsModule,
     MatMenuModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonToggleModule,
+    MatChipsModule,
+    MatListModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

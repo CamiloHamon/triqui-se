@@ -1,10 +1,32 @@
-<div class="row justify-content-center">
-  <button mat-button [matMenuTriggerFor]="aboveMenu">Dificultad</button>
-  <mat-menu #aboveMenu="matMenu" yPosition="above">
-    <button mat-menu-item>Fácil</button>
-    <button mat-menu-item>Medio</button>
-    <button mat-menu-item>Invencible</button>
-  </mat-menu>
+<div class="row justify-content-center align-items-center mt-4 mx-0">
+  <div class="col-auto">
+    <mat-form-field appearance="fill">
+      <mat-label>Dificultad</mat-label>
+      <mat-select matNativeControl [(value)]="selectedDifficulty" [disabled]="isChecked">
+        <mat-option
+          *ngFor="let difficulty of difficulties"
+          [value]="difficulty"
+        >
+          {{ difficulty.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-  <button mat-button>Multijugador</button>
+  <div class="col-auto pb-3">
+    <mat-slide-toggle (click)="toggleCheked()">
+      <span class="text-white">Multijugador</span>
+    </mat-slide-toggle>
+  </div>
+</div>
+
+<div class="row justify-content-center mx-0" style="gap: 1rem">
+  <div class="col-auto">
+    <span *ngIf="!isChecked">
+      Dificultad de juego: {{ selectedDifficulty.viewValue }}
+    </span>
+    <span *ngIf="isChecked">
+      Modo multijugador
+    </span>
+  </div>
 </div>

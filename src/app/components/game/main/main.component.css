@@ -1,0 +1,17 @@
+.container {
+  display: grid;
+  align-content: center;
+  height: calc(100vh - 35%);
+}
+
+.col-1{
+  cursor: pointer;
+}
+
+.col-1:hover{
+  background-color: #00000082;
+}
+
+.col-auto{
+  min-width: 120px;
+}

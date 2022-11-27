@@ -13,6 +13,8 @@ import { AppComponent } from './app.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MainComponent } from './components/game/main/main.component';
 import { MenuComponent } from './components/game/menu/menu.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +32,8 @@ import { MenuComponent } from './components/game/menu/menu.component';
     MatButtonToggleModule,
     MatChipsModule,
     MatListModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

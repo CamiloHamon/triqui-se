@@ -1,6 +1,4 @@
-<app-menu
-  (emitCheked)="getValueChecked($event)"
-></app-menu>
+<app-menu (emitCheked)="getValueChecked($event)"></app-menu>
 <div class="container">
   <div class="row justify-content-center mx-0 mt-5" style="gap: 1rem">
     <div class="col-auto text-center" *ngFor="let player of players">
@@ -13,21 +11,13 @@
     </div>
   </div>
 
-  <div class="row justify-content-center">
-    <div class="col-1 border-top border-start p-5"></div>
-    <div class="col-1 border-top border-start p-5"></div>
-    <div class="col-1 border-top border-start border-end p-5"></div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-1 border-top border-start p-5"></div>
-    <div class="col-1 border-top border-start p-5"></div>
-    <div class="col-1 border-top border-start border-end p-5"></div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-1 border-top border-start border-bottom p-5"></div>
-    <div class="col-1 border-top border-start border-bottom p-5"></div>
-    <div
-      class="col-1 border-top border-start border-bottom border-end p-5"
-    ></div>
+  <div class="d-flex justify-content-center">
+    <div class="row justify-content-center" style="width: 292px">
+      <div
+        *ngFor="let celda of tablero.campos; let i = index"
+        class="{{ celda.styles }}"
+        (click)="sendPos(i)"
+      ></div>
+    </div>
   </div>
 </div>

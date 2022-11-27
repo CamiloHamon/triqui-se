@@ -15,3 +15,26 @@
 .col-auto{
   min-width: 120px;
 }
+
+.cross{
+  background: url('/assets/red-x-png-4.png');
+  background-size: 50px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+.circle{
+  background: url('/assets/circle.png');
+  background-size: 70px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mat-simple-snackbar>span{
+  color: black!important;
+}
+
+.mat-button-wrapper{
+  color: black!important;
+}
